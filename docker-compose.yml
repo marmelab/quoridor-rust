@@ -5,7 +5,7 @@ services:
     image: rust
     volumes:
       - ./quoridor:/usr/quoridor
-    command: bash -c "cargo install --path . && cargo build && cargo test"
+    command: bash -c "cargo install --path . && cargo build && cargo run"
     working_dir: /usr/quoridor
     ports:
       - "8383"
