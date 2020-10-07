@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  api:
+    image: rust
+    volumes:
+      - ./src:/usr/src
+    command: cargo install --path .
+    working_dir: /usr/src
+    ports:
+      - "8383"
