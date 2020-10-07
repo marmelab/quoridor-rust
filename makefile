@@ -11,3 +11,6 @@ start: ## Start the server
 
 stop: ## Stop the server
 	docker-compose down
+
+test: ## Test the application
+	docker-compose run api cargo test

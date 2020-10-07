@@ -4,8 +4,8 @@ services:
   api:
     image: rust
     volumes:
-      - ./src:/usr/src
-    command: bash -c "cargo install --path . && cargo build && cargo run"
-    working_dir: /usr/src
+      - ./quoridor:/usr/quoridor
+    command: bash -c "cargo install --path . && cargo build && cargo test"
+    working_dir: /usr/quoridor
     ports:
       - "8383"
