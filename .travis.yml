@@ -1,0 +1,13 @@
+# https://travis-ci.com/marmelab/quoridor-rust/
+
+language: rust
+
+rust:
+  - stable
+
+services:
+  - docker
+
+install: make install
+
+script: make test
