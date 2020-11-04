@@ -2,7 +2,9 @@ version: "3"
 
 services:
   api:
-    image: rust
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
       - ./quoridor:/usr/quoridor
     command: bash -c "cargo install --path . && cargo build && cargo run"

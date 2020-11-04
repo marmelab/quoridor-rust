@@ -14,3 +14,6 @@ stop: ## Stop the server
 
 test: ## Test the application
 	docker-compose run api cargo test
+
+lint: ## Run the linter 
+	docker-compose run api cargo clippy
