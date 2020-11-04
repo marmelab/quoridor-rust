@@ -12,5 +12,4 @@ mod tests {
         let value = prints_and_returns_10(4);
         assert_eq!(10, value);
     }
-
 }
