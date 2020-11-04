@@ -11,3 +11,7 @@ services:
 install: make install
 
 script: make test
+
+branches:
+  only:
+    - master
