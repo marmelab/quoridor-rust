@@ -11,4 +11,4 @@ services:
     command: bash -c "cargo build && cargo run"
     working_dir: /usr/quoridor
     ports:
-      - "8383"
+      - "8383:8383"
