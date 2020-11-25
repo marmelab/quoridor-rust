@@ -1,6 +1,7 @@
 
 use actix_web::{middleware, web, App, HttpServer};
 mod handler;
+mod game;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -12,6 +13,7 @@ async fn main() -> std::io::Result<()> {
             // enable logger
             .wrap(middleware::Logger::default())
             .service(web::resource("/").to(handler::hello))
+            .service(web::resource("/board").to(handler::get_board))
     })
     .bind("api:8383")?
     .run()
@@ -21,8 +23,7 @@ async fn main() -> std::io::Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use actix_web::{test, web, App};
-    use actix_web::body::{Body, ResponseBody};
+    use actix_web::{test, web, App, body::{Body, ResponseBody}};
 
     trait BodyTest {
         fn as_str(&self) -> &str;

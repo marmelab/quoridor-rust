@@ -1,8 +1,13 @@
-use actix_web::{HttpRequest};
+use actix_web::{web, HttpRequest, Responder};
+use crate::game::{Board};
 
 pub async fn hello(req: HttpRequest) -> &'static str {
     println!("REQ: {:?}", req);
     "Hello world!"
+}
+
+pub async fn get_board() -> impl Responder {
+    web::Json(Board::new(9))
 }
 
 #[cfg(test)]
