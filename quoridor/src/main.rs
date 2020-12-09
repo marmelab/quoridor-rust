@@ -1,6 +1,8 @@
 
 use actix_web::{middleware, web, App, HttpServer};
+
 mod handler;
+mod game;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -9,9 +11,8 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(|| {
         App::new()
-            // enable logger
             .wrap(middleware::Logger::default())
-            .service(web::resource("/").to(handler::hello))
+            .service(web::resource("/board").to(handler::get_board))
     })
     .bind("api:8383")?
     .run()
@@ -21,8 +22,7 @@ async fn main() -> std::io::Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use actix_web::{test, web, App};
-    use actix_web::body::{Body, ResponseBody};
+    use actix_web::{test, web, App, body::{Body, ResponseBody}};
 
     trait BodyTest {
         fn as_str(&self) -> &str;
@@ -44,14 +44,14 @@ mod tests {
     }
 
     #[actix_rt::test]
-    async fn test_get_hello_world() {
-        let mut app = test::init_service(App::new().route("/", web::get().to(handler::hello))).await;
+    async fn test_get_board() {
+        let mut app = test::init_service(App::new().route("/", web::get().to(handler::get_board))).await;
         let req = test::TestRequest::with_header("content-type", "text/plain").to_request();
         
         let resp = test::call_service(&mut app, req).await;
         
         assert!(resp.status().is_success());
-        assert_eq!(resp.response().body().as_str(), "Hello world!");
+        assert_eq!(resp.response().body().as_str(), "{\"size\":3,\"squares\":[{\"column\":0,\"row\":0},{\"column\":1,\"row\":0},{\"column\":2,\"row\":0},{\"column\":0,\"row\":1},{\"column\":1,\"row\":1},{\"column\":2,\"row\":1},{\"column\":0,\"row\":2},{\"column\":1,\"row\":2},{\"column\":2,\"row\":2}]}");
     }
 
 }
