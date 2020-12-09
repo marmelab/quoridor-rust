@@ -10,7 +10,7 @@ pub struct Position {
 #[derive(Debug, Serialize)]
 pub struct Board {
     size: u8,
-	squares: Vec<Position>
+    squares: Vec<Position>
 }
 
 impl Board {
@@ -34,6 +34,54 @@ impl Board {
             }
         }
         Ok(Board { size, squares })
+    }
+
+}
+
+
+pub const NORTH: u8 = 1;
+pub const EAST: u8 = 2;
+pub const SOUTH: u8 = 3;
+pub const WEST: u8 = 4;
+pub const UNKNOWN: u8 = 0;
+
+#[derive(Debug, Serialize)]
+pub struct Pawn {
+    position: Position,
+    goal: u8,
+}
+
+#[derive(Debug, Serialize)]
+pub struct Fence {
+    n_w_square: Position,
+    is_horizontal: bool,
+}
+
+#[derive(Debug, Serialize)]
+pub struct Game {
+    id: String,
+    over: bool,
+    pawn_turn: u8,
+    pawns: Vec<Pawn>,
+    fences: Vec<Fence>,
+    board: Board,
+}
+
+
+impl Game {
+    pub fn new(board_size: u8) -> Game {
+        let id = "titi".to_string();
+        let mut over = false;
+        let mut pawn_turn = 0;
+        let mut pawns = Vec::new();
+        let mut fences = Vec::new();
+        let mut board = Board::new(board_size);
+
+        let line_center: u8 = (board_size - 1) / 2;
+
+        pawns.push(Pawn{position:Position{column:0, row:line_center}, goal:EAST});
+        pawns.push(Pawn{position:Position{column:(board_size - 1), row:line_center}, goal:WEST});
+        Game {  id, over, pawn_turn, pawns, fences, board }
     }
 
 }

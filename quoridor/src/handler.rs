@@ -1,18 +1,21 @@
+use crate::error::AppError;
+use crate::game::{Board, Game};
 use actix_web::{HttpResponse, Responder};
-use crate::game::{Board};
-use crate::error::{AppError};
-
 
 pub async fn get_board() -> Result<impl Responder, AppError> {
     let result = Board::new(3);
     result.map(|board| HttpResponse::Ok().json(board))
 }
 
+pub async fn new_game() -> impl Responder {
+    web::Json(Game::new(5))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use actix_web::{http, test, web, App, Error};
     use actix_web::dev::Service;
+    use actix_web::{http, test, web, App, Error};
 
     #[actix_rt::test]
     async fn test_get_board() -> Result<(), Error> {
@@ -33,5 +36,4 @@ mod tests {
 
         Ok(())
     }
-
 }
