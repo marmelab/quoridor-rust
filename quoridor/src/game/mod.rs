@@ -33,7 +33,7 @@ impl Board {
                 squares.push(Position{column, row});
             }
         }
-        return Ok(Board { size, squares });
+        Ok(Board { size, squares })
     }
 
 }
