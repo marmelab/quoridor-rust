@@ -1,4 +1,5 @@
 use serde::{Serialize};
+use crate::error::{AppError, AppErrorType};
 
 #[derive(Debug, Serialize)]
 pub struct Position {
@@ -13,12 +14,18 @@ pub struct Board {
 }
 
 impl Board {
-    pub fn new(size: u8) -> Board {
+    pub fn new(size: u8) -> Result<Board, AppError> {
         if size < 3 {
-            panic!("The board size must be at least 3.");
+            return Err(AppError{
+                message: Some("The board size must be at least 3.".to_string()), 
+                cause: None, 
+                error_type: AppErrorType::IllegalArgumentError});
         }
         if size % 2 == 0 {
-            panic!("The board size must be an odd number.");
+            return Err(AppError{
+                message: Some("The board size must be an odd number.".to_string()), 
+                cause: None, 
+                error_type: AppErrorType::IllegalArgumentError});
         }
         let mut squares = Vec::new();
         for row in 0..size {
@@ -26,7 +33,7 @@ impl Board {
                 squares.push(Position{column, row});
             }
         }
-        Board { size, squares }
+        return Ok(Board { size, squares });
     }
 
 }
