@@ -1,5 +1,5 @@
-use serde::{Serialize};
 use crate::error::{AppError, AppErrorType};
+use serde::Serialize;
 
 #[derive(Debug, Serialize)]
 pub struct Position {
@@ -10,34 +10,34 @@ pub struct Position {
 #[derive(Debug, Serialize)]
 pub struct Board {
     size: u8,
-    squares: Vec<Position>
+    squares: Vec<Position>,
 }
 
 impl Board {
     pub fn new(size: u8) -> Result<Board, AppError> {
         if size < 3 {
-            return Err(AppError{
-                message: Some("The board size must be at least 3.".to_string()), 
-                cause: None, 
-                error_type: AppErrorType::IllegalArgumentError});
+            return Err(AppError {
+                message: Some("The board size must be at least 3.".to_string()),
+                cause: None,
+                error_type: AppErrorType::IllegalArgumentError,
+            });
         }
         if size % 2 == 0 {
-            return Err(AppError{
-                message: Some("The board size must be an odd number.".to_string()), 
-                cause: None, 
-                error_type: AppErrorType::IllegalArgumentError});
+            return Err(AppError {
+                message: Some("The board size must be an odd number.".to_string()),
+                cause: None,
+                error_type: AppErrorType::IllegalArgumentError,
+            });
         }
         let mut squares = Vec::new();
         for row in 0..size {
             for column in 0..size {
-                squares.push(Position{column, row});
+                squares.push(Position { column, row });
             }
         }
         Ok(Board { size, squares })
     }
-
 }
-
 
 pub const NORTH: u8 = 1;
 pub const EAST: u8 = 2;
@@ -67,21 +67,43 @@ pub struct Game {
     board: Board,
 }
 
-
 impl Game {
-    pub fn new(board_size: u8) -> Game {
-        let id = "titi".to_string();
-        let mut over = false;
-        let mut pawn_turn = 0;
+    pub fn new(board_size: u8) -> Result<Game, AppError> {
+        let id = "anUID".to_string();
+        let over = false;
+        let pawn_turn = 0;
         let mut pawns = Vec::new();
-        let mut fences = Vec::new();
-        let mut board = Board::new(board_size);
+        let fences = Vec::new();
+        let board_result = Board::new(board_size);
+
+        let board = match board_result {
+            Ok(board) => board,
+            Err(e) => return Err(e),
+        };
 
         let line_center: u8 = (board_size - 1) / 2;
 
-        pawns.push(Pawn{position:Position{column:0, row:line_center}, goal:EAST});
-        pawns.push(Pawn{position:Position{column:(board_size - 1), row:line_center}, goal:WEST});
-        Game {  id, over, pawn_turn, pawns, fences, board }
+        pawns.push(Pawn {
+            position: Position {
+                column: 0,
+                row: line_center,
+            },
+            goal: EAST,
+        });
+        pawns.push(Pawn {
+            position: Position {
+                column: (board_size - 1),
+                row: line_center,
+            },
+            goal: WEST,
+        });
+        Ok(Game {
+            id,
+            over,
+            pawn_turn,
+            pawns,
+            fences,
+            board,
+        })
     }
-
 }

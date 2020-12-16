@@ -8,7 +8,8 @@ pub async fn get_board() -> Result<impl Responder, AppError> {
 }
 
 pub async fn new_game() -> impl Responder {
-    web::Json(Game::new(5))
+    let result = Game::new(5);
+    result.map(|game| HttpResponse::Ok().json(game))
 }
 
 #[cfg(test)]
