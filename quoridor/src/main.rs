@@ -1,6 +1,7 @@
 
 use actix_web::{middleware, web, App, HttpServer};
 
+mod error;
 mod handler;
 mod game;
 

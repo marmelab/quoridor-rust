@@ -1,8 +1,11 @@
-use actix_web::{web, Responder};
+use actix_web::{HttpResponse, Responder};
 use crate::game::{Board};
+use crate::error::{AppError};
 
-pub async fn get_board() -> impl Responder {
-    web::Json(Board::new(3))
+
+pub async fn get_board() -> Result<impl Responder, AppError> {
+    let result = Board::new(3);
+    result.map(|board| HttpResponse::Ok().json(board))
 }
 
 #[cfg(test)]
