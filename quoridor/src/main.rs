@@ -17,6 +17,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(middleware::Logger::default())
             .service(web::resource("/board").to(handler::get_board))
+            .service(web::resource("/game").to(handler::new_game))
     })
     .bind(api_port)?
     .run()
