@@ -1,11 +1,10 @@
+mod position;
+mod fence;
+
 use crate::error::{AppError, AppErrorType};
 use serde::Serialize;
-
-#[derive(Debug, Serialize)]
-pub struct Position {
-    column: u8,
-    row: u8,
-}
+use crate::game::position::{Position, Direction};
+use crate::game::fence::{Fence};
 
 #[derive(Debug, Serialize)]
 pub struct Board {
@@ -39,22 +38,10 @@ impl Board {
     }
 }
 
-pub const NORTH: u8 = 1;
-pub const EAST: u8 = 2;
-pub const SOUTH: u8 = 3;
-pub const WEST: u8 = 4;
-pub const UNKNOWN: u8 = 0;
-
 #[derive(Debug, Serialize)]
 pub struct Pawn {
     position: Position,
-    goal: u8,
-}
-
-#[derive(Debug, Serialize)]
-pub struct Fence {
-    n_w_square: Position,
-    is_horizontal: bool,
+    goal: Direction,
 }
 
 #[derive(Debug, Serialize)]
@@ -88,14 +75,14 @@ impl Game {
                 column: 0,
                 row: line_center,
             },
-            goal: EAST,
+            goal: Direction::EAST,
         });
         pawns.push(Pawn {
             position: Position {
                 column: (board_size - 1),
                 row: line_center,
             },
-            goal: WEST,
+            goal: Direction::WEST,
         });
         Ok(Game {
             id,
