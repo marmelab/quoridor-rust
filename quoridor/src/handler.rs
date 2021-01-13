@@ -1,11 +1,5 @@
-use crate::error::AppError;
-use crate::game::{Board, Game};
+use crate::game::{Game};
 use actix_web::{HttpResponse, Responder};
-
-pub async fn get_board() -> Result<impl Responder, AppError> {
-    let result = Board::new(3);
-    result.map(|board| HttpResponse::Ok().json(board))
-}
 
 pub async fn new_game() -> impl Responder {
     let result = Game::new(5);
@@ -19,8 +13,8 @@ mod tests {
     use actix_web::{http, test, web, App, Error};
 
     #[actix_rt::test]
-    async fn test_get_board() -> Result<(), Error> {
-        let app = App::new().route("/", web::get().to(get_board));
+    async fn test_new_game() -> Result<(), Error> {
+        let app = App::new().route("/", web::get().to(new_game));
         let mut app = test::init_service(app).await;
 
         let req = test::TestRequest::get().uri("/").to_request();
@@ -33,7 +27,7 @@ mod tests {
             _ => panic!("Response error"),
         };
 
-        assert_eq!(response_body, "{\"size\":3,\"squares\":[{\"column\":0,\"row\":0},{\"column\":1,\"row\":0},{\"column\":2,\"row\":0},{\"column\":0,\"row\":1},{\"column\":1,\"row\":1},{\"column\":2,\"row\":1},{\"column\":0,\"row\":2},{\"column\":1,\"row\":2},{\"column\":2,\"row\":2}]}");
+        assert_eq!(response_body, "{\"id\":\"anUID\",\"over\":false,\"pawn_turn\":0,\"pawns\":[{\"position\":{\"column\":0,\"row\":2},\"goal\":\"EAST\"},{\"position\":{\"column\":4,\"row\":2},\"goal\":\"WEST\"}],\"fences\":[],\"board\":{\"size\":5,\"squares\":[{\"column\":0,\"row\":0},{\"column\":1,\"row\":0},{\"column\":2,\"row\":0},{\"column\":3,\"row\":0},{\"column\":4,\"row\":0},{\"column\":0,\"row\":1},{\"column\":1,\"row\":1},{\"column\":2,\"row\":1},{\"column\":3,\"row\":1},{\"column\":4,\"row\":1},{\"column\":0,\"row\":2},{\"column\":1,\"row\":2},{\"column\":2,\"row\":2},{\"column\":3,\"row\":2},{\"column\":4,\"row\":2},{\"column\":0,\"row\":3},{\"column\":1,\"row\":3},{\"column\":2,\"row\":3},{\"column\":3,\"row\":3},{\"column\":4,\"row\":3},{\"column\":0,\"row\":4},{\"column\":1,\"row\":4},{\"column\":2,\"row\":4},{\"column\":3,\"row\":4},{\"column\":4,\"row\":4}]}}");
 
         Ok(())
     }

@@ -16,7 +16,6 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .wrap(middleware::Logger::default())
-            .service(web::resource("/board").to(handler::get_board))
             .service(web::resource("/game").to(handler::new_game))
     })
     .bind(api_port)?
@@ -49,14 +48,14 @@ mod tests {
     }
 
     #[actix_rt::test]
-    async fn test_get_board() {
-        let mut app = test::init_service(App::new().route("/", web::get().to(handler::get_board))).await;
+    async fn test_new_game() {
+        let mut app = test::init_service(App::new().route("/", web::get().to(handler::new_game))).await;
         let req = test::TestRequest::with_header("content-type", "text/plain").to_request();
 
         let resp = test::call_service(&mut app, req).await;
 
         assert!(resp.status().is_success());
-        assert_eq!(resp.response().body().as_str(), "{\"size\":3,\"squares\":[{\"column\":0,\"row\":0},{\"column\":1,\"row\":0},{\"column\":2,\"row\":0},{\"column\":0,\"row\":1},{\"column\":1,\"row\":1},{\"column\":2,\"row\":1},{\"column\":0,\"row\":2},{\"column\":1,\"row\":2},{\"column\":2,\"row\":2}]}");
+        assert_eq!(resp.response().body().as_str(), "{\"id\":\"anUID\",\"over\":false,\"pawn_turn\":0,\"pawns\":[{\"position\":{\"column\":0,\"row\":2},\"goal\":\"EAST\"},{\"position\":{\"column\":4,\"row\":2},\"goal\":\"WEST\"}],\"fences\":[],\"board\":{\"size\":5,\"squares\":[{\"column\":0,\"row\":0},{\"column\":1,\"row\":0},{\"column\":2,\"row\":0},{\"column\":3,\"row\":0},{\"column\":4,\"row\":0},{\"column\":0,\"row\":1},{\"column\":1,\"row\":1},{\"column\":2,\"row\":1},{\"column\":3,\"row\":1},{\"column\":4,\"row\":1},{\"column\":0,\"row\":2},{\"column\":1,\"row\":2},{\"column\":2,\"row\":2},{\"column\":3,\"row\":2},{\"column\":4,\"row\":2},{\"column\":0,\"row\":3},{\"column\":1,\"row\":3},{\"column\":2,\"row\":3},{\"column\":3,\"row\":3},{\"column\":4,\"row\":3},{\"column\":0,\"row\":4},{\"column\":1,\"row\":4},{\"column\":2,\"row\":4},{\"column\":3,\"row\":4},{\"column\":4,\"row\":4}]}}");
     }
 
 }
