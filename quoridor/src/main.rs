@@ -16,7 +16,8 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .wrap(middleware::Logger::default())
-            .service(web::resource("/game").to(handler::new_game))
+            .service(web::resource("/games/{gameId}").to(handler::new_game))
+            .service(web::resource("/games/{gameId}/add-fence").route(web::post().to(handler::add_fence)))
     })
     .bind(api_port)?
     .run()

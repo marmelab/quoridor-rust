@@ -1,9 +1,17 @@
 use crate::game::{Game};
-use actix_web::{HttpResponse, Responder};
+use crate::game::fence::{Fence};
+
+use actix_web::{HttpResponse, Responder, web};
 
 pub async fn new_game() -> impl Responder {
     let result = Game::new(5);
     result.map(|game| HttpResponse::Ok().json(game))
+}
+
+pub async fn add_fence(fence: web::Json<Fence>) -> impl Responder {
+    let result = Game::new(5);
+    let res= result.unwrap().add_fence(fence.into_inner());
+    res.map(|game| HttpResponse::Ok().json(game))
 }
 
 #[cfg(test)]

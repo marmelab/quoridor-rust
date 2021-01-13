@@ -1,7 +1,7 @@
 use crate::game::position::{Position};
 use crate::error::{AppError, AppErrorType};
 use serde::Serialize;
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone)]
 pub struct Board {
     size: u8,
     squares: Vec<Position>,

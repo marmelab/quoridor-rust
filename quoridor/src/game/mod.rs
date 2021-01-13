@@ -1,21 +1,21 @@
 mod board;
 mod position;
-mod fence;
+pub mod fence;
 
 use serde::Serialize;
-use crate::error::{AppError};
+use crate::error::{AppError, AppErrorType};
 use crate::game::position::{Position, Direction};
-use crate::game::fence::{Fence};
+use crate::game::fence::{Fence, PositionSquare, new_position_square};
 use crate::game::board::{Board};
 
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone)]
 pub struct Pawn {
     position: Position,
     goal: Direction,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone)]
 pub struct Game {
     id: String,
     over: bool,
@@ -64,4 +64,58 @@ impl Game {
             board,
         })
     }
+
+    pub fn get_next_pawn_turn(&mut self) -> u8 {
+        let next = self.pawn_turn+1;
+        if (next) as usize > self.pawns.len() {
+            return 1
+        }
+        return next
+    }
+
+    pub fn add_fence(&mut self, fence: Fence) -> Result<Game, AppError> {
+        if self.over {
+            return Err(AppError {
+                message: Some("Game is over, unable to add a fence.".to_string()),
+                cause: None,
+                error_type: AppErrorType::PlayError,
+            });
+        }
+        let position_square = new_position_square(fence.n_w_square);
+        if self.has_already_a_fence_at_the_same_position(fence.n_w_square) || self.has_neighbour_fence(fence.is_horizontal, position_square) {
+            return Err(AppError {
+                message: Some("The fence overlaps another on.".to_string()),
+                cause: None,
+                error_type: AppErrorType::PlayError,
+            });
+        }
+        self.add_fence_if_crossable(fence);
+        self.pawn_turn = self.get_next_pawn_turn();
+        return Ok(self.clone());
+    }
+
+    pub fn add_fence_if_crossable(&mut self, fence: Fence) -> Result<Game, AppError> {
+        if !self.is_crossable(fence) {
+            return Err(AppError {
+                message: Some("No more access to goal line.".to_string()),
+                cause: None,
+                error_type: AppErrorType::PlayError,
+            });
+        }
+        self.fences.push(fence);
+        return Ok(self.clone());
+    }
+    
+    pub fn has_already_a_fence_at_the_same_position(&mut self, p: Position) -> bool {
+        return false
+    }
+    
+    pub fn has_neighbour_fence(&mut self, is_horizontal: bool, ps: PositionSquare) -> bool {
+        return false
+    }
+
+    pub fn is_crossable(&mut self, fence: Fence) -> bool {
+        return true
+    }
+
 }

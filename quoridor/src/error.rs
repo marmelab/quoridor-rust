@@ -5,7 +5,8 @@ use std::fmt;
 #[derive(Debug)]
 pub enum AppErrorType {
     NotFoundError,
-    IllegalArgumentError
+    IllegalArgumentError,
+    PlayError
 }
 
 #[derive(Debug)]
@@ -46,7 +47,8 @@ impl ResponseError for AppError {
     fn status_code(&self) -> StatusCode {
         match self.error_type {
             AppErrorType::NotFoundError => StatusCode::NOT_FOUND,
-            AppErrorType::IllegalArgumentError => StatusCode::BAD_REQUEST
+            AppErrorType::IllegalArgumentError => StatusCode::BAD_REQUEST,
+            AppErrorType::PlayError => StatusCode::CONFLICT
         }
     }
 

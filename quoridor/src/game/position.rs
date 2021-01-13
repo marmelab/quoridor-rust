@@ -1,28 +1,28 @@
-use serde::{Serialize};
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Copy, Clone)]
+#[derive(Debug, Deserialize, Serialize, Copy, Clone)]
 pub struct Position {
     pub column: u8,
     pub row: u8,
 }
 
 impl Position {
-	pub fn translate_column(&mut self, delta: u8) -> Position {
+	pub fn translate_column(&self, delta: i8) -> Position {
 		let mut position = self.clone();
-		position.column += delta; 
+		position.column = (position.column as i8).wrapping_add(delta) as u8;
 		position
 	}
 
-	pub fn translate_row(&mut self, delta: u8) -> Position {
+	pub fn translate_row(&self, delta: i8) -> Position {
 		let mut position = self.clone();
-		position.row += delta; 
+		position.row = (position.row as i8).wrapping_add(delta) as u8;
 		position
 	}
 
-	pub fn translate(&mut self, delta_column: u8, delta_row: u8) -> Position {
+	pub fn translate(&self, delta_column: i8, delta_row: i8) -> Position {
 		let mut position = self.clone();
-		position.column += delta_column; 
-		position.row += delta_row; 
+		position.column = (position.column as i8).wrapping_add(delta_column) as u8;
+		position.row = (position.row as i8).wrapping_add(delta_row) as u8;
 		position
 	}
 }
@@ -34,7 +34,6 @@ pub enum Direction {
 	SOUTH,
 	WEST,
 	UNKNOWN
-
 }
 
 pub fn get_direction(from: Position, to: Position) -> Direction {
